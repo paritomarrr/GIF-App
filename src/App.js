@@ -5,11 +5,19 @@ import { useEffect, useState } from 'react';
 // Constants
 const TWITTER_HANDLE = 'tomarpari90';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-
+const TEST_GIFS = [
+	'https://media.giphy.com/media/3oEjI1erPMTMBFmNHi/giphy.gif',
+	'https://media.giphy.com/media/3oEhn8HISbX78FH8L6/giphy.gif',
+	'https://media.giphy.com/media/3owvJTMeMnqTruNrZm/giphy.gif',
+	'https://media.giphy.com/media/lwdzpYxsi4iJi/giphy.gif',
+  'https://media.giphy.com/media/1poV5tPhshE97gw9Df/giphy.gif',
+  'https://media.giphy.com/media/3og0IDCumL5GLx7zag/giphy.gif'
+]
 const App = () => {
 
   // states
   const [walletAddress, setWalletAddress] = useState(null)
+  const [inputValue, setInputValue] = useState('')
 
   // function decides if hantom wallet is connected or not
   const checkIfWalletIsConnected = async () => {
@@ -33,6 +41,36 @@ const App = () => {
     }
   }
 
+  const sendGif = async () => {
+    if (inputValue.length > 0) {
+      console.log('GIF Link: ', inputValue)
+    } else {
+      console.log('Empty input. Try again!')
+    }
+  }
+
+  const onInputChange = (e) => {
+    const {value} = e.target;
+    setInputValue(value)
+  }
+
+  const renderConnectedContainer = () => (
+    <div className="connected-container">
+      <form onSubmit={(e) => {
+        e.preventDefault();
+      }}>
+        <input type="text" placeholder="Enter GIF Link" value={inputValue} onChange={onInputChange} />
+        <button type="submit" className="cta-button submit-gif-button" onSubmit={sendGif}>Submit</button>
+      </form>
+      <div className="gif-grid">
+        {TEST_GIFS.map(gif => (
+          <div className="gif-item" key={gif}>
+            <img src={gif} alt={gif} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
   // render this ui when user hasnt connected to their wallet
   const renderNotConnectedContainer = () => (
     <button className='cta-button connect-wallet-button' onClick={connectWallet}>
@@ -51,12 +89,13 @@ const App = () => {
     {/* This was solely added for some styling fanciness */}
     <div className={walletAddress ? 'authed-container' : 'container'}>
       <div className="header-container">
-        <p className="header">🖼 GIF Portal</p>
+        <p className="header">🖼GOT GATEWAY</p>
         <p className="sub-text">
-          View your GIF collection in the metaverse ✨
+          View your GOT collection in the metaverse ✨
         </p>
         {/* Add the condition to show this only if we don't have a wallet address */}
         {!walletAddress && renderNotConnectedContainer()}
+        {walletAddress && renderConnectedContainer()}
       </div>
       <div className="footer-container">
         <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
