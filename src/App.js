@@ -18,6 +18,7 @@ const App = () => {
   // states
   const [walletAddress, setWalletAddress] = useState(null)
   const [inputValue, setInputValue] = useState('')
+  const [gifList, setGifList] = useState([])
 
   // function decides if hantom wallet is connected or not
   const checkIfWalletIsConnected = async () => {
@@ -44,6 +45,8 @@ const App = () => {
   const sendGif = async () => {
     if (inputValue.length > 0) {
       console.log('GIF Link: ', inputValue)
+      setGifList([...gifList, inputValue])
+      setInputValue('')
     } else {
       console.log('Empty input. Try again!')
     }
@@ -58,12 +61,13 @@ const App = () => {
     <div className="connected-container">
       <form onSubmit={(e) => {
         e.preventDefault();
+        sendGif();
       }}>
         <input type="text" placeholder="Enter GIF Link" value={inputValue} onChange={onInputChange} />
-        <button type="submit" className="cta-button submit-gif-button" onSubmit={sendGif}>Submit</button>
+        <button type="submit" className="cta-button submit-gif-button">Submit</button>
       </form>
       <div className="gif-grid">
-        {TEST_GIFS.map(gif => (
+        {gifList.map(gif => (
           <div className="gif-item" key={gif}>
             <img src={gif} alt={gif} />
           </div>
@@ -84,6 +88,15 @@ const App = () => {
     window.addEventListener('load', onLoad);
     return () => window.removeEventListener('load', onLoad);
   }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
+      console.log('Fetching GIF List...')
+      // solana program here
+      // set state
+      setGifList(TEST_GIFS)
+    } 
+  }, [walletAddress])
   return (
     <div className="App">
     {/* This was solely added for some styling fanciness */}
